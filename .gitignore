@@ -1,0 +1,7 @@
+node_modules/
+.sites-runtime/
+.sites-checkout/
+*.log
+output/playwright/
+output/release-source/
+supabase/.temp/
