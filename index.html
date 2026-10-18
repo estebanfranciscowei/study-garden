@@ -94,7 +94,7 @@
 <dialog id="rewardDialog" aria-labelledby="rewardTitle"><form id="rewardForm"><div class="modal-header"><h2 id="rewardTitle">期待一点自己的奖励</h2><button type="button" class="close" data-close aria-label="关闭"><svg class="icon"><use href="#close"/></svg></button></div><input id="rewardId" type="hidden"><label class="modal-field" for="rewardName">奖励名称</label><input id="rewardName" maxlength="30" required placeholder="例如：看一集喜欢的动画"><fieldset class="reward-icon-picker" id="rewardIconPicker"><legend>选择奖励图标</legend><div id="rewardIconChoices"></div></fieldset><div class="form-row"><div><label class="modal-field" for="rewardMinutes">休息时长（分钟）</label><input id="rewardMinutes" type="number" min="1" max="180" step="1" value="10" required></div><div><label class="modal-field" for="rewardCost">需要金币</label><input id="rewardCost" type="number" min="1" max="9999" step="1" value="20" required></div></div><p class="modal-copy">修改只用于之后的兑换，过去的记录和正在进行的休息会保留原样。</p><div class="modal-footer"><button type="button" class="secondary" id="restoreRewardBtn" hidden>恢复初始设置</button><button type="submit" class="primary" id="rewardSubmit">加入我的奖励</button></div></form></dialog>
 <dialog id="soundDialog" aria-labelledby="soundTitle" aria-describedby="soundIntro">
  <div class="modal-header"><h2 id="soundTitle">完成提示音</h2><button class="close" data-close aria-label="关闭"><svg class="icon"><use href="#close"/></svg></button></div>
- <p class="sound-intro" id="soundIntro">专注完成或休息结束时，轻轻提醒你。</p>
+ <p class="sound-intro" id="soundIntro">专注或休息结束时提醒你，直到你注意到这一轮已结束。</p>
  <label class="reminder-toggle" for="soundEnabled"><span><strong>声音提醒</strong><small id="soundToggleHint">计时结束时播放提示音</small></span><input id="soundEnabled" type="checkbox" role="switch" aria-describedby="soundToggleHint"></label>
  <fieldset class="sound-controls" id="soundControls"><legend class="sr-only">提示音和音量</legend>
   <div class="sound-tone-row"><div><label class="modal-field" for="soundType">提示音</label><select id="soundType"><option value="gentle">轻柔铃声</option><option value="bright">清亮音阶</option><option value="soft">舒缓低音</option></select></div><button id="soundPreview" class="secondary sound-preview" type="button" aria-pressed="false"><svg class="icon"><use href="#play"/></svg><span>试听</span></button></div>
@@ -102,11 +102,12 @@
   <div class="sound-volume-row"><svg class="icon" aria-hidden="true"><use href="#mute"/></svg><input id="soundVolume" type="range" min="0" max="100" step="1" value="50"><svg class="icon" aria-hidden="true"><use href="#volume"/></svg></div>
  </fieldset>
  <p class="sound-status" id="soundPreviewStatus" role="status" aria-live="polite"></p>
- <p class="sound-note">网页关闭时无法响铃。设置自动保存在本机。</p>
+ <div class="completion-reminder-settings"><strong class="completion-reminder-label">单次长提醒</strong><p class="sound-note">计时结束时播放一次约 4 秒的提示音，结束状态保留到你确认，不循环响铃。</p><div class="notification-setting"><strong>切到其他软件时也提醒</strong><button type="button" id="notificationToggle" class="secondary">开启系统通知</button></div><p id="notificationStatus" class="sound-note" role="status"></p></div>
+ <p class="sound-note">结束提醒沿用上方的声音开关和音量。网页关闭时无法提醒，后台运行可能受浏览器和系统限制。设置保存在本机。</p>
  <div class="modal-footer"><button class="primary" data-close>设置好了</button></div>
 </dialog>
 <dialog id="confirmDialog" aria-labelledby="confirmTitle"><div class="modal-header"><h2 id="confirmTitle"></h2><button class="close" data-close aria-label="关闭"><svg class="icon"><use href="#close"/></svg></button></div><p class="modal-copy" id="confirmCopy"></p><div class="modal-footer"><button class="secondary" data-close>先等等</button><button class="primary" id="confirmAction">确认</button></div></dialog>
-<dialog id="successDialog" aria-labelledby="successTitle"><div class="success-body"><div class="success-symbol"><svg class="icon" id="successIcon"><use href="#leaf"/></svg></div><h2 id="successTitle">这一小步，完成了。</h2><p id="successCopy"></p><div class="reward-total" id="successCoins"></div><details class="completion-reflection" id="completionReflection"><summary>记一句学习复盘（可选）</summary><label for="successLearned">这次学会了什么<textarea id="successLearned" rows="2" maxlength="1000" placeholder="一个知识点、一点发现，都算数。"></textarea></label><label for="successNext">下次从哪里继续<textarea id="successNext" rows="2" maxlength="300" placeholder="例如：接着看循环指令，再做一道练习。"></textarea></label><p id="successReflectionStatus" role="status">可以留空，填写后自动保存。</p><button id="completeLinkedTask" type="button" class="secondary" hidden>把这件任务标记为完成</button></details><button class="primary" data-close>收下这份小小的成就</button></div></dialog>
+<dialog id="successDialog" aria-labelledby="successTitle"><div class="success-body"><div class="success-symbol"><svg class="icon" id="successIcon"><use href="#leaf"/></svg></div><h2 id="successTitle">这一小步，完成了。</h2><p id="successCopy"></p><div class="reward-total" id="successCoins"></div><p class="completion-elapsed" id="completionElapsed" role="timer" aria-live="off"></p><p class="completion-alert-status" id="completionAlertStatus"></p><button id="stopCompletionAlert" class="secondary" type="button" hidden>停止声音提醒</button><details class="completion-reflection" id="completionReflection"><summary>记一句学习复盘（可选）</summary><label for="successLearned">这次学会了什么<textarea id="successLearned" rows="2" maxlength="1000" placeholder="一个知识点、一点发现，都算数。"></textarea></label><label for="successNext">下次从哪里继续<textarea id="successNext" rows="2" maxlength="300" placeholder="例如：接着看循环指令，再做一道练习。"></textarea></label><p id="successReflectionStatus" role="status">可以留空，填写后自动保存。</p><button id="completeLinkedTask" type="button" class="secondary" hidden>把这件任务标记为完成</button></details><button class="primary" data-close>收下这份小小的成就</button></div></dialog>
 <dialog id="historyDialog" aria-labelledby="historyTitle">
  <div class="modal-header"><h2 id="historyTitle">每一小步，都有记录</h2><button class="close" data-close aria-label="关闭"><svg class="icon"><use href="#close"/></svg></button></div>
  <p class="history-total" id="historyTotal"></p>
@@ -131,10 +132,11 @@
 <dialog id="reflectionDialog" aria-labelledby="reflectionTitle"><form id="reflectionForm"><div class="modal-header"><h2 id="reflectionTitle">留下一点学习收获</h2><button type="button" class="close" data-close aria-label="关闭"><svg class="icon"><use href="#close"/></svg></button></div><p class="modal-copy" id="reflectionContext"></p><input id="reflectionSessionId" type="hidden"><label class="modal-field" for="reflectionLearned">这次学会了什么（可选）</label><textarea id="reflectionLearned" rows="3" maxlength="1000"></textarea><label class="modal-field" for="reflectionNext">下次从哪里继续（可选）</label><textarea id="reflectionNext" rows="2" maxlength="300"></textarea><p class="modal-copy small">内容会留在这次学习记录里，也可以从历史记录中搜索。</p><div class="modal-footer"><button class="primary" type="submit">保存复盘</button></div></form></dialog>
 <dialog id="gardenDialog" aria-labelledby="gardenDialogTitle"><div class="modal-header"><h2 id="gardenDialogTitle">布置自己的小花园</h2><button class="close" data-close aria-label="关闭"><svg class="icon"><use href="#close"/></svg></button></div><p class="modal-copy" id="gardenUnlockSummary"></p><div id="gardenChoices"></div><p class="modal-copy small">解锁只看累计专注时间，不花金币。离开几天也不会枯萎，已经解锁的装扮会一直保留。</p><div class="modal-footer"><button class="primary" data-close>布置好了</button></div></dialog>
 <script src="study-tools.js"></script>
+<script src="completion-alerts.js"></script>
 <script>
 (()=>{'use strict';
 const BASE_KEY='little-by-little-study-v1', THEME_KEY='little-by-little-theme', CIRCLE=2*Math.PI*105;
-const Tools=window.StudyGardenTools;
+const Tools=window.StudyGardenTools,Alerts=window.StudyGardenAlerts;
 let KEY=BASE_KEY;
 const $=id=>document.getElementById(id), icon=name=>`<svg class="icon" aria-hidden="true"><use href="#${name}"/></svg>`;
 const DEFAULT_GOALS=['看懂一条汇编指令','读两页课件，记下一句话','独立做一道练习题'];
@@ -173,10 +175,10 @@ function toast(message){$('toast').textContent=message;$('toast').classList.add(
 function openDialog(id){const el=$(id);if(!el.open)el.showModal();}
 function confirmAction(title,copy,button,fn){const expectedKey=KEY;$('confirmTitle').textContent=title;$('confirmCopy').textContent=copy;$('confirmAction').textContent=button;confirmation=()=>{if(KEY!==expectedKey){toast('账号已变化，请重新确认操作。');return;}fn();};openDialog('confirmDialog');}
 document.querySelectorAll('[data-close]').forEach(b=>b.addEventListener('click',()=>b.closest('dialog').close()));
-document.querySelectorAll('dialog').forEach(d=>d.addEventListener('click',e=>{if(e.target===d){const r=d.getBoundingClientRect();if(e.clientX<r.left||e.clientX>r.right||e.clientY<r.top||e.clientY>r.bottom)d.close();}}));
+document.querySelectorAll('dialog').forEach(d=>d.addEventListener('click',e=>{if(e.target===d){const r=d.getBoundingClientRect();if((e.clientX<r.left||e.clientX>r.right||e.clientY<r.top||e.clientY>r.bottom)&&!(d.id==='successDialog'&&Alerts.isPending()))d.close();}}));
 $('confirmAction').addEventListener('click',()=>{const fn=confirmation;confirmation=null;$('confirmDialog').close();fn?.();});
 function remaining(){const c=state.current;return c?(c.deadline===null?c.remainingMs:Math.max(0,c.deadline-Date.now())):state.selectedMinutes*60000;}
-function renderTimer(){const c=state.current,ms=remaining(),secs=Math.ceil(ms/1000);$('timerDigits').textContent=`${String(Math.floor(secs/60)).padStart(2,'0')}:${String(secs%60).padStart(2,'0')}`;document.title=c?`${$('timerDigits').textContent} · ${c.kind==='focus'?'专注':'休息'} · 一点点`:'一点点 · 学习小花园';$('progressRing').style.strokeDashoffset=String(CIRCLE*(1-ms/(c?c.duration:state.selectedMinutes*60000)));if(c&&ms<=0&&c.deadline!==null)finish();}
+function renderTimer(){const c=state.current,ms=remaining(),secs=Math.ceil(ms/1000);$('timerDigits').textContent=`${String(Math.floor(secs/60)).padStart(2,'0')}:${String(secs%60).padStart(2,'0')}`;document.title=c?`${$('timerDigits').textContent} · ${c.kind==='focus'?'专注':'休息'} · 一点点`:'一点点 · 学习小花园';$('progressRing').style.strokeDashoffset=String(CIRCLE*(1-ms/(c?c.duration:state.selectedMinutes*60000)));Alerts.update(KEY,c);if(c&&ms<=0&&c.deadline!==null)finish();}
 function render(){
  const c=state.current,rest=c?.kind==='break',running=c&&c.deadline!==null;
  $('todayDate').textContent=new Intl.DateTimeFormat('zh-CN',{month:'long',day:'numeric',weekday:'long'}).format(new Date());
@@ -217,8 +219,8 @@ async function chime(preview=false){
  if((!preview&&!state.sound)||state.soundVolume===0)return;
  stopChime();const generation=audioGeneration,volume=state.soundVolume/100,tone=state.soundType;
  try{if(!await initAudio())throw Error('audio');if(generation!==audioGeneration)return;const patterns={gentle:[523.25,659.25,783.99],bright:[659.25,783.99,1046.5],soft:[392,493.88,587.33]};
- (patterns[tone]||patterns.gentle).forEach((freq,i)=>{const o=audioContext.createOscillator(),g=audioContext.createGain(),at=audioContext.currentTime+i*.14;o.connect(g);g.connect(audioContext.destination);activeTones.set(o,g);o.onended=()=>{activeTones.delete(o);o.disconnect();g.disconnect();};o.type='sine';o.frequency.value=freq;g.gain.setValueAtTime(0,at);g.gain.linearRampToValueAtTime(.18*volume,at+.02);g.gain.exponentialRampToValueAtTime(.00001,at+.5);o.start(at);o.stop(at+.5);});
- if(preview){clearTimeout(previewTimeout);previewTimeout=setTimeout(()=>{previewPlaying=false;renderSoundSettings();},850);}
+ (patterns[tone]||patterns.gentle).forEach((freq,i)=>{const o=audioContext.createOscillator(),g=audioContext.createGain(),at=audioContext.currentTime+i*.8,length=2.4;o.connect(g);g.connect(audioContext.destination);activeTones.set(o,g);o.onended=()=>{activeTones.delete(o);o.disconnect();g.disconnect();};o.type='sine';o.frequency.value=freq;g.gain.setValueAtTime(0,at);g.gain.linearRampToValueAtTime(.18*volume,at+.02);g.gain.exponentialRampToValueAtTime(.00001,at+length);o.start(at);o.stop(at+length);});
+ if(preview){clearTimeout(previewTimeout);previewTimeout=setTimeout(()=>{previewPlaying=false;renderSoundSettings();},4100);}
  }catch{if(preview&&generation===audioGeneration){previewPlaying=false;renderSoundSettings();$('soundPreviewStatus').textContent='暂时无法播放，请检查浏览器的声音权限后重试。';}}
 }
 function celebrate(){if(matchMedia('(prefers-reduced-motion: reduce)').matches)return;$('confetti').innerHTML=Array.from({length:24},(_,i)=>`<i style="left:${10+Math.random()*80}%;animation-delay:${Math.random()*.35}s;--drift:${Math.random()*120-60}px;transform:rotate(${i*20}deg)"></i>`).join('');setTimeout(()=>$('confetti').replaceChildren(),2400);}
@@ -226,8 +228,8 @@ async function finish(){
  if(finishing)return;finishing=true;const expectedKey=KEY;
  try{const settle=()=>{if(KEY!==expectedKey)return;sync();const c=state.current;if(!c||c.deadline===null||c.deadline>Date.now())return;const at=c.deadline,minutes=c.duration/60000;state.current=null;const focus=c.kind==='focus';
  const completedSession=focus?{id:c.id,task:c.task,minutes,at,...(c.category?{category:c.category}:{}),...(c.taskId?{taskId:c.taskId}:{})}:null;
- if(focus&&!state.sessions.some(s=>s.id===c.id)){state.sessions.push(completedSession);state.coins+=minutes*2;}save();render();Tools.completion(completedSession);stopPreview();chime();
- document.querySelectorAll('dialog[open]').forEach(d=>d.close());$('successTitle').textContent=focus?'这一小步，完成了。':'休息时间到啦。';$('successCopy').textContent=focus?`你为「${c.task}」认真留出了 ${minutes} 分钟。小花园也长大了一点。`:'活动一下肩膀。想继续的话，再选一件很小的事就好。';$('successCoins').innerHTML=focus?`${icon('coin')}+ ${minutes*2} 枚金币`:icon('sun');$('successDialog').querySelector('[data-close]').textContent=focus?'收下这份小小的成就':'按自己的节奏继续';openDialog('successDialog');if(focus)celebrate();};
+ if(focus&&!state.sessions.some(s=>s.id===c.id)){state.sessions.push(completedSession);state.coins+=minutes*2;}save();render();Tools.completion(completedSession);stopPreview();
+ document.querySelectorAll('dialog[open]').forEach(d=>d.close());$('successTitle').textContent=focus?'这一小步，完成了。':'休息时间到啦。';$('successCopy').textContent=focus?`你为「${c.task}」认真留出了 ${minutes} 分钟。小花园也长大了一点。`:'活动一下肩膀。想继续的话，再选一件很小的事就好。';$('successCoins').innerHTML=focus?`${icon('coin')}+ ${minutes*2} 枚金币`:icon('sun');$('successDialog').querySelector('[data-close]').textContent='我知道了，结束这一轮';openDialog('successDialog');Alerts.begin({id:c.id,task:c.task,kind:c.kind,at});if(focus)celebrate();};
  if(navigator.locks?.request)await navigator.locks.request(KEY,settle);else settle();
  }finally{finishing=false;}
 }
@@ -362,6 +364,7 @@ window.addEventListener('storage',e=>{if(e.key===KEY){sync();render();queueCloud
 document.addEventListener('visibilitychange',()=>{if(!document.hidden){sync();render();if(authSession)syncCloud();}else if(authSession&&cloudDirty&&!cloudBusy)syncCloud();});
 setInterval(()=>{if(dateKey(Date.now())!==lastDate){lastDate=dateKey(Date.now());render();}else renderTimer();},250);
 Tools.initialize({getState:()=>state,getKey:()=>KEY,sync,save,render,toast,confirmAction,openDialog,startTask:id=>{sync();if(state.current){toast('请先完成或结束当前这一轮，再换一件小事。');return;}const task=state.tasks.find(t=>t.id===id&&!t.deleted&&!t.done);if(!task)return;state.goal=task.title;state.selectedTaskId=id;$('taskInput').value=task.title;save();$('startBtn').click();$('startBtn').scrollIntoView({block:'center',behavior:matchMedia('(prefers-reduced-motion: reduce)').matches?'auto':'smooth'});}});
+Alerts.initialize({getKey:()=>KEY,playSound:()=>chime(),stopSound:()=>stopChime(),canPlaySound:()=>state.sound&&state.soundVolume>0,refresh:()=>render(),showCompletion:pending=>{const focus=pending.kind==='focus',session=state.sessions.find(s=>s.id===pending.id);Tools.completion(session||null);$('successTitle').textContent=focus?'这一小步，完成了。':'休息时间到啦。';$('successCopy').textContent=focus?`「${pending.task}」这一轮已经结束，完成记录和金币已保存。`:'活动一下肩膀，准备好后再开始下一步。';$('successCoins').innerHTML=focus&&session?`${icon('coin')}+ ${session.minutes*2} 枚金币`:icon('sun');$('successDialog').querySelector('[data-close]').textContent='我知道了，结束这一轮';openDialog('successDialog');}});
 applyTheme();render();bootCloud();
 })();
 </script>

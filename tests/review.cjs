@@ -85,7 +85,7 @@ const seed = {
     await accounts.route(origin + '/**', route => {
       const filename = new URL(route.request().url()).pathname.slice(1) || 'index.html';
       if (filename === 'cloud-config.json') return route.fulfill({ json: { url: cloud, publishableKey: 'sb_publishable_test' } });
-      if (!['index.html', 'appearance.css', 'study-tools.css', 'study-tools.js'].includes(filename)) return route.fulfill({ status: 404 });
+      if (!['index.html', 'appearance.css', 'study-tools.css', 'study-tools.js', 'completion-alerts.js'].includes(filename)) return route.fulfill({ status: 404 });
       const types = { html: 'text/html; charset=utf-8', css: 'text/css', js: 'application/javascript' };
       return route.fulfill({ body: fs.readFileSync(path.join(root, filename)), contentType: types[filename.split('.').at(-1)] });
     });

@@ -3,10 +3,14 @@
   "version": "2026.10.18",
   "private": true,
   "description": "一点点 · 学习小花园，静态学习计时与个人奖励应用",
-  "engines": { "node": ">=20" },
+  "engines": {
+    "node": ">=20"
+  },
   "scripts": {
     "check": "node tests/static.cjs",
-    "test": "npm run check && node tests/features.cjs && node tests/study-tools.cjs && node tests/review.cjs"
+    "test": "npm run check && node tests/features.cjs && node tests/study-tools.cjs && node tests/review.cjs && node tests/completion.cjs"
   },
-  "devDependencies": { "playwright": "1.62.1" }
+  "devDependencies": {
+    "playwright": "1.62.1"
+  }
 }
